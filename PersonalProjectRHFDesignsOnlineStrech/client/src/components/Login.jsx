@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const Login = () => {
+const Login = (props) => {
+    const {setLoggedUser} = props
     const [userLogin, setUserLogin] = useState({
         email:'',
         password:''
@@ -19,7 +20,8 @@ const Login = () => {
         e.preventDefault()
         axios.post('http://localhost:8000/api/loginUser', userLogin, {withCredentials:true})
             .then((res) => {
-                console.log(res.data.message)
+                setLoggedUser (res.data.user)
+                console.log(res)
                 navigate("/shopInventory")
             })
             .catch((err) => {

@@ -28,12 +28,13 @@ module.exports = {
             }
         }
         catch(err) {
+            console.log(err)
             res.status(400).json({ error:err })
         }
     },
 
 
-//Where User Logs in
+// Where User Logs in
 
     loginUser: async (req, res) => {
         try{
@@ -41,12 +42,12 @@ module.exports = {
 // await is meant for grabbing 
             const user = await User.findOne({email:req.body.email})
             if(user){
-                // bcrypt.compare makes sure passwords match
+// bcrypt.compare makes sure passwords match
                 const passwordsMatch = await bcrypt.compare(req.body.password, user.password)
                 if (passwordsMatch){
                     const userToken = jwt.sign({_id: user._id, email: user.email, isAdmin: user.isAdmin}, secret, {expiresIn:'2h'})
-                    // Safety Net
-                    res.status(201).cookie('userToken', userToken, {httpOnly:true, maxAge: 2 * 60 * 60 * 1000}).json(user)
+// Safety Net
+                    res.status(201).cookie('userToken', userToken, {httpOnly:true, maxAge: 2 * 60 * 60 * 1000}).json({user})
                 }
 // If password or email is wrong we do not specify what was in error as a protection against hackers
                 else{
@@ -67,5 +68,42 @@ module.exports = {
     logoutUser: (req, res) => {
         res.clearCookie('userToken')
         res.status(200).json({message:'Logged Out Successfully'})
+    },
+
+    deleteUser: async (req, res) => {
+        try {
+            const { id } = req.body
+            await User.findById(id)
+            .then(user => user.remove())
+            .then(user =>
+            res.status(201).json({ message: "User successfully deleted", user })
+            )
+        }
+        catch(err){
+            res.status(400).json({error: err})
+        }
+    },
+
+    getLoggedInUser: async (req, res) => {
+        const id = req.params.id
+        try{
+            const user = await User.findById(id)
+            res.status(200).json(user)
+        }
+        catch(err){
+            res.status(400).json({error: err})
+        }
+    },
+
+    userAuth : async (req, res) => {
+        try {
+            const token = req.cookies.jwt
+            const user = jwt.verify(req.cookies.userToken, SECRET)
+            const currentUser = await User.findOne({ _id: user._id })
+            res.status(201).json(currentUser)
+        }
+        catch(err){
+            res.status(400).json({error: err})
+        }
     }
 }

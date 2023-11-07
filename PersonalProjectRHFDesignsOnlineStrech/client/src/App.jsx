@@ -1,81 +1,92 @@
-import { useState } from 'react'
-import { BrowserRouter, Routes, Route} from 'react-router-dom'
-import './App.css'
-// import '../assets/images'
-import ShopInventory from './components/ShopInventory'
-import Create from './components/Create'
-import Edit from './components/Edit'
-import Nav from './components/Nav'
-import Company from './components/Company'
-import View from './components/View'
-import Register from './components/Register'
-import HomePage from './components/HomePage'
-import Login from './components/Login'
-
+import axios from "axios";
+import { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import "./App.css";
+import ShopInventory from "./components/ShopInventory";
+import Create from "./components/Create";
+import Edit from "./components/Edit";
+import Nav from "./components/Nav";
+import Company from "./components/Company";
+import View from "./components/View";
+import Register from "./components/Register";
+import HomePage from "./components/HomePage";
+import Login from "./components/Login";
 
 function App() {
-  const [mainUser, setMainUser] = useState({})
-  // const images = require.context('../assets/images', true) [
-  //   '004a.jpg',
-  //   '006a.jpg',
-  //   '007a.jpg',
-  //   '011a.jpg',
-  //   '015a.jpg',
-  //   '017a.jpg',
-  //   '023a.jpg',
-  //   '034a.jpg',
-  //   '035a.jpg',
-  //   '041a.jpg',
-  //   '049a.jpg',
-  //   '051a.jpg',
-  //   '052a.jpg',
-  //   '053a.jpg',
-  //   '055a.jpg',
-  //   '0061a.jpg',
-  //   '062a.jpg',
-  //   '066a.jpg',
-  //   '075a.jpg',
-  //   '078a.jpg',
-  //   '079a.jpg',
-  //   '10001.jpg',
-  //   '10002.jpg',
-  //   '10003.jpg',
-  //   '10004.jpg',
-  //   '10005.jpg',
-  //   '10006.jpg',
-  //   '10007.jpg',
-  //   '10008.jpg',
-  //   '10009.jpg',
-  //   '10010.jpg'
-  // ]
-  // const imageList = images.keys().map(image => images(image))
+  const [loggedUser, setLoggedUser] = useState({});
+  const [allJewelry, setAllJewelry] = useState([]);
 
+  const getAllJewelry = () => {
+    axios
+      .get(`http://localhost:8000/api/jewelry`)
+      .then((response) => {
+        console.log("I am get all jewelry!!!");
+        setAllJewelry(response.data.allJewelry);
+      })
+      .catch((err) => {
+        console.log(err.response);
+      });
+  };
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/api/getLoggedUser", { withCredentials: true })
+      .then((res) => {
+        setLoggedUser(res.data.user), console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    getAllJewelry();
+  }, []);
 
   return (
     <>
-    <div className='App'>
-      <BrowserRouter>
-      <Nav/>
-        <Routes>
-          <Route path="/shopInventory" element={ <ShopInventory/> } />
-          <Route path="/create" element={ <Create/> } />
-          <Route path="/edit/:id" element={ <Edit/> } />
-          <Route path="/view/:id" element={ <View/> } />
-          <Route path="/company" element={ <Company/> } />
-          <Route path='/register' element={ <Register mainUser = {mainUser} setMainUser={setMainUser} />}/>
-          <Route path='/login' element={ <Login mainUser = {mainUser} setMainUser={setMainUser} />}/>
-          <Route index element={ <HomePage mainUser = {mainUser} setMainUser={setMainUser} />}/>
-        </Routes>
-
-      </BrowserRouter>
-      {/* <div>
-        {imageList.map((image, index) => (
-          <img key={index} src={image.default} alt={`image-${index}`} />
-        ))}
-      </div> */}
-    </div>
+      <div className="App">
+        <BrowserRouter>
+          <Nav />
+          <Routes>
+            <Route
+              path="/shopInventory"
+              element={
+                <ShopInventory
+                  allJewelry={allJewelry}
+                  setAllJewelry={setAllJewelry}
+                  loggedUser={loggedUser}
+                  setLoggedUser={setLoggedUser}
+                />
+              }
+            />
+            <Route
+              path="/create"
+              element={
+                <Create loggedUser={loggedUser} setAllJewelry={setAllJewelry} />
+              }
+            />
+            <Route
+              path="/edit/:id"
+              element={
+                <Edit loggedUser={loggedUser} getAllJewelry={getAllJewelry} />
+              }
+            />
+            <Route
+              path="/view/:id"
+              element={
+                <View loggedUser={loggedUser} getAllJewelry={getAllJewelry} />
+              }
+            />
+            <Route path="/company" element={<Company />} />
+            <Route path="/register" element={<Register />} />
+            <Route
+              path="/login"
+              element={<Login setLoggedUser={setLoggedUser} />}
+            />
+            <Route index element={<HomePage />} />
+          </Routes>
+        </BrowserRouter>
+      </div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

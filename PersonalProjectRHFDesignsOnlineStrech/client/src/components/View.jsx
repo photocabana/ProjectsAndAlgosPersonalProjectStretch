@@ -1,11 +1,12 @@
 import axios from 'axios'
 import { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
-// import '../assets/images'
 
-const View = () => {
+const View = (props) => {
+    const { getAllJewelry } = props
     const [jewelry, setJewelry] = useState({
         itemNumber: "",
+        image: "",
         itemDescription: "",
         medium: "",
         hardware: "",
@@ -33,7 +34,8 @@ const View = () => {
         .then((response) => {
             console.log("Your Jewelry Piece has been removed", response.data)
             console.log(response.data.oneSingleJewelry)
-            navigate("/")
+            getAllJewelry()
+            navigate("/ShopInventory")
         })
         .catch((err) => {
             console.log("error deleting jewelry piece", err.response)
@@ -43,6 +45,7 @@ const View = () => {
     const logoutUser = () => {
         axios.post('http://localhost:8000/api/logoutUser', {}, {withCredentials:true})
             .then((res) => {
+                console.log(res)
                 navigate('/')
             })
             .catch((err) => {
@@ -58,8 +61,10 @@ const View = () => {
                 <div className="card-deck">
                     <div className="card @media">
                         <div className="col-sm" key={jewelry._id}>
-                            <img className="card-img-top" src="..." alt="Card image cap"></img>
                             <div className="card-body">
+                            <p className="card-img-top">
+                                <img src={jewelry.image} alt='jewelry image' width={"150px"}/>
+                                </p>
                                 <h5 className="card-title">{jewelry.itemNumber}</h5>
                                 <p className="card-text"><small className="text-muted">{jewelry.itemDescription}</small></p>
                                 <p className="card-text"><small className="text-muted">Cost:  ${jewelry.cost}</small></p>

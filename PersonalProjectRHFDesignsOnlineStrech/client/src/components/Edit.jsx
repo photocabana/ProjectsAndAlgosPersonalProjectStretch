@@ -1,11 +1,15 @@
 import axios from 'axios'
 import { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
+// import logoutUser from '../hooks/logout'
 
 
-const Edit = () => {
+const Edit = (props) => {
+    const { getAllJewelry } = props
+    console.log('props', props)
     const [jewelry, setJewelry] = useState({
         itemNumber: "",
+        image: "",
         itemDescription: "",
         medium: "",
         hardware: "",
@@ -35,7 +39,8 @@ const Edit = () => {
         .then((response) => {
             console.log("Your Jewelry Piece has been removed", response.data)
             console.log(response.data.oneSingleJewelry)
-            navigate("/shopInventory")
+            getAllJewelry()
+            navigate("/ShopInventory")
         })
         .catch((err) => {
             console.log("error deleting jewelry piece", err.response)
@@ -46,12 +51,13 @@ const Edit = () => {
         e.preventDefault()
         axios.patch(`http://localhost:8000/api/edit/${id}`, jewelry)
         .then((response) => {
-            console.log(response)
-            console.log(response.data.oneSingleJewelry)
-            navigate("/shopInventory")
+            console.log('Look at me response', response)
+            getAllJewelry()
+            navigate("/ShopInventory")
         })
         .catch((err) => {
-            console.log(err.response. data.error.errors)
+            console.log('look at me', typeof(err), err)
+
             setErrors(err.response.data.error.errors)
         })
     }
@@ -74,7 +80,6 @@ const Edit = () => {
             <div className='card @media'>
                 <form onSubmit={submitHandler}>
                     <h2>Edit {jewelry.itemNumber}:</h2>
-                    <img className="card-img-top" src="..." alt="Card image cap"></img>
 
             {/* Jewelry Item Number Section */}
 
@@ -87,6 +92,15 @@ const Edit = () => {
                             onChange={(e) => setJewelry({ ...jewelry, itemNumber: e.target.value })} 
                         />
                         {errors.itemNumber ? <p>{errors.itemNumber.message}</p> : null}
+                    </div>
+                    <br/>
+
+            {/* Jewelry Image Section */}
+
+                    <div className="form-group">
+                    <p className="card-img-top">
+                        <img src={jewelry.image} alt='jewelry image' width={"150px"}/>
+                    </p>
                     </div>
                     <br/>
 

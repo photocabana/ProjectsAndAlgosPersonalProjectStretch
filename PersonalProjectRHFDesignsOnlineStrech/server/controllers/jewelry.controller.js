@@ -12,12 +12,14 @@ module.exports = {
     },
 
     createNewJewelry : (req, res) => {
+        console.log(req.body)
     Jewelry.create(req.body)
         .then(newlyCreatedJewelry => {
             res.status(200).json({ newlyCreatedJewelry })
         })
         .catch((err) => {
-            res.status(400).json({ message: 'Something went wrong in create controllers', error: err })
+            // res.status(400).json({ message: 'Something went wrong in create controllers', error: err })
+            res.status(400).json(err)
         })
     },
 
@@ -46,7 +48,7 @@ module.exports = {
     },
 
     deleteJewelry : (req, res) => {
-    Jewelry.deleteOne({ _id: req.params.id, isAdmin: true })
+    Jewelry.deleteOne({ _id: req.params.id })
         .then(result => {
             res.status(200).json({ result: result })
         })
@@ -55,4 +57,3 @@ module.exports = {
         })
     }
 }
-

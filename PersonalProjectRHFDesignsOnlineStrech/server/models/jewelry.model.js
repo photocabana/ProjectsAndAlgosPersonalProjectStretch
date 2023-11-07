@@ -33,10 +33,13 @@ const JewelrySchema = new mongoose.Schema(
             required: [true, "Number selection is required"],
             min: [-1, "Quantity must be more than zero!"],
         },
-        file: {
+        image: {
             type: String,
             required: [false],
         },
+        creatorId: {
+            type: String
+        }
     }, 
     {timestamps: true}
 )

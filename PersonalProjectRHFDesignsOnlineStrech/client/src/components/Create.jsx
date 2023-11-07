@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
-
-const Create = () => {
+const Create = (props) => {
+    const {loggedUser, setAllJewelry} = props
     const [jewelry, setJewelry] = useState({
         itemNumber: "",
         itemDescription: "",
@@ -11,7 +11,8 @@ const Create = () => {
         hardware: "",
         cost: "",
         quantity: "",
-        file: ""
+        image: "",
+        creatorId: loggedUser._id
     })
 
     const [errors, setErrors] = useState({})
@@ -21,8 +22,10 @@ const Create = () => {
         e.preventDefault()
         axios.post(`http://localhost:8000/api/new`, jewelry)
         .then(response => {
+            // allDesigns is the better getter - after the arrow is implied
+            setAllJewelry(allDesigns => [...allDesigns, response.data.newlyCreatedJewelry])
             console.log(response)
-            navigate("/shopInventory")
+            navigate("/ShopInventory")
         })
         .catch(err => {
             console.log(err.response)
@@ -33,30 +36,13 @@ const Create = () => {
     const logoutUser = () => {
         axios.post('http://localhost:8000/api/logoutUser', {}, {withCredentials:true})
             .then((res) => {
+                console.log(res)
                 navigate('/')
             })
             .catch((err) => {
                 console.log(err);
             })
     }
-
-
-    // function handleChange(e) {
-	// 	console.log(e.target.file);
-	// 	setJewelry(URL.createObjectURL(e.target.jewelry.file[0]));
-	// }
-
-    // const fileFilter = (req, file, cb) => {
-    //     const allowedFileTypes =  ["image/jpeg", "image/jpg", "image/png"]
-    
-    //         if(allowedFileTypes.includes(file.mimetype)) {
-    //             cb(null, true)
-    //         } else {
-    //             cb(null, false)
-    //         }
-    //     }
-    
-
 
     return (
         <div>
@@ -77,7 +63,7 @@ const Create = () => {
 
                 {/* Jewelry - Item Nunmber Section */}
 
-                                <label htmlFor="itemNumber"><b>Item Number: </b></label>
+                                <label htmlFor="itemNumber"><b>Image Item #:</b></label>
                                 <input 
                                     type="text" 
                                     name="itemNumber" 
@@ -260,18 +246,624 @@ const Create = () => {
 
                             <br/>
 
-                {/* Jewelry - Enter Photo Section */}
+                {/* Jewelry - Enter Image Section */}
 
-                            {/* <div className="form-group">
-                                <label htmlFor="quantity"><b>Choose Photo: </b></label>
-                                <input 
-                                type="photo" 
-                                name="photo"
-                                value={jewelry.photo}
-                                onChange={(e) => setJewelry({ ...jewelry, photo: e.target.value })}
-                                <img src={jewelry.photo} />
+                            <div className='jewelryHolder'>
+                                <div key={jewelry._id} className={`card-rounded ${jewelry.selected ? 'selected' : ''}`}>
+                                <label htmlFor="quantity"><b>Images: </b></label>
+                                    <div className='card-image'>
+                                        <img width={"150px"}
+                                        className='img-fluid'
+                                        src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0009.JPG?updatedAt=1698582998763"
+                                        name="004a"
+                                        value="004a"
+                                        {...jewelry.image === "004a"} 
+                                        onChange={(e) => setJewelry({ ...jewelry, image: e.target.value })}
+                                        onClick={() => (`${jewelry.image}`)}
+                                        />
+                                        <input className='card-body text-center'
+                                        type="radio"
+                                        name="jewelry"
+                                        checked={jewelry.selected}
+                                        onChange={(e) => {
+                                        setJewelry(oldJewelry => ({
+                                            ...oldJewelry, 
+                                            image: e.target.previousSibling.src,
+                                            itemNumber: e.target.previousSibling.name
+                                        }))}}
+                                        />
+                                        <h3>004a</h3>
+                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
+                                        {jewelry.itemNumber}004a
+                                        </h3> */}
+                                        <hr />
+                                    </div>
+                                </div>
+                                <div key={jewelry._id} className={`card-rounded ${jewelry.selected ? 'selected' : ''}`}>
+                                    <div className='card-image'>
+                                        <img width={"150px"}
+                                        className='img-fluid'
+                                        src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0011.JPG?updatedAt=1698583003687"
+                                        name="006a"
+                                        value="006a"
+                                        {...jewelry.image === "006a"} 
+                                        onChange={(e) => setJewelry({ ...jewelry, image: e.target.value })}
+                                        onClick={() => (`${jewelry.image}`)}
+                                        />
+                                        <input className='card-body text-center'
+                                        type="radio"
+                                        name="jewelry"
+                                        checked={jewelry.selected}
+                                        onChange={(e) => {
+                                        setJewelry(oldJewelry => ({
+                                            ...oldJewelry, 
+                                            image: e.target.previousSibling.src,
+                                            itemNumber: e.target.previousSibling.name
+                                        }))}}
+                                        />
+                                        <h3>006a</h3>
+                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
+                                        {jewelry.itemNumber}006a
+                                        </h3> */}
+                                        <hr />
+                                    </div>
+                                </div>
+                                <div key={jewelry._id} className={`card-rounded ${jewelry.selected ? 'selected' : ''}`}>
+                                    <div className='card-image'>
+                                        <img width={"150px"}
+                                        className='img-fluid'
+                                        src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0019.JPG?updatedAt=1698583028438"
+                                        name="007a"
+                                        value="007a"
+                                        {...jewelry.image === "007a"} 
+                                        onChange={(e) => setJewelry({ ...jewelry, image: e.target.value })}
+                                        onClick={() => (`${jewelry.image}`)}
+                                        />
+                                        <input className='card-body text-center'
+                                        type="radio"
+                                        name="jewelry"
+                                        checked={jewelry.selected}
+                                        onChange={(e) => {
+                                        setJewelry(oldJewelry => ({
+                                            ...oldJewelry, 
+                                            image: e.target.previousSibling.src,
+                                            itemNumber: e.target.previousSibling.name
+                                        }))}}
+                                        />
+                                        <h3>007a</h3>
+                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
+                                        {jewelry.itemNumber}007a
+                                        </h3> */}
+                                        <hr />
+                                    </div>
+                                </div>
+                                <div key={jewelry._id} className={`card-rounded ${jewelry.selected ? 'selected' : ''}`}>
+                                    <div className='card-image'>
+                                        <img width={"150px"}
+                                        className='img-fluid'
+                                        src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0023.JPG?updatedAt=1698583028096"
+                                        name="011a"
+                                        value="011a"
+                                        {...jewelry.image === "011a"} 
+                                        onChange={(e) => setJewelry({ ...jewelry, image: e.target.value })}
+                                        onClick={() => (`${jewelry.image}`)}
+                                        />
+                                        <input className='card-body text-center'
+                                        type="radio"
+                                        name="jewelry"
+                                        checked={jewelry.selected}
+                                        onChange={(e) => {
+                                        setJewelry(oldJewelry => ({
+                                            ...oldJewelry, 
+                                            image: e.target.previousSibling.src,
+                                            itemNumber: e.target.previousSibling.name
+                                        }))}}
+                                        />
+                                        <h3>011a</h3>
+                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
+                                        {jewelry.itemNumber}011a
+                                        </h3> */}
+                                        <hr />
+                                    </div>
+                                </div>
+                                <div key={jewelry._id} className={`card-rounded ${jewelry.selected ? 'selected' : ''}`}>
+                                    <div className='card-image'>
+                                        <img width={"150px"}
+                                        className='img-fluid'
+                                        src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0014.JPG?updatedAt=1698583000911"
+                                        name="015a"
+                                        value="015a"
+                                        {...jewelry.image === "015a"} 
+                                        onChange={(e) => setJewelry({ ...jewelry, image: e.target.value })}
+                                        onClick={() => (`${jewelry.image}`)}
+                                        />
+                                        <input className='card-body text-center'
+                                        type="radio"
+                                        name="jewelry"
+                                        checked={jewelry.selected}
+                                        onChange={(e) => {
+                                        setJewelry(oldJewelry => ({
+                                            ...oldJewelry, 
+                                            image: e.target.previousSibling.src,
+                                            itemNumber: e.target.previousSibling.name
+                                        }))}}
+                                        />
+                                        <h3>015a</h3>
+                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
+                                        {jewelry.itemNumber}015a
+                                        </h3> */}
+                                        <hr />
+                                    </div>
+                                </div>
+                                <div key={jewelry._id} className={`card-rounded ${jewelry.selected ? 'selected' : ''}`}>
+                                    <div className='card-image'>
+                                        <img width={"150px"}
+                                        className='img-fluid'
+                                        src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0021.JPG?updatedAt=1698583028484"
+                                        name="017a"
+                                        value="017a"
+                                        {...jewelry.image === "017a"} 
+                                        onChange={(e) => setJewelry({ ...jewelry, image: e.target.value })}
+                                        onClick={() => (`${jewelry.image}`)}
+                                        />
+                                        <input className='card-body text-center'
+                                        type="radio"
+                                        name="jewelry"
+                                        checked={jewelry.selected}
+                                        onChange={(e) => {
+                                        setJewelry(oldJewelry => ({
+                                            ...oldJewelry, 
+                                            image: e.target.previousSibling.src,
+                                            itemNumber: e.target.previousSibling.name
+                                        }))}}
+                                        />
+                                        <h3>017a</h3>
+                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
+                                        {jewelry.itemNumber}017a
+                                        </h3> */}
+                                        <hr />
+                                    </div>
+                                </div>
+                                <div key={jewelry._id} className={`card-rounded ${jewelry.selected ? 'selected' : ''}`}>
+                                    <div className='card-image'>
+                                        <img width={"150px"}
+                                        className='img-fluid'
+                                        src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0022.JPG?updatedAt=1698583028643"
+                                        name="023a"
+                                        value="023a"
+                                        {...jewelry.image === "023a"} 
+                                        onChange={(e) => setJewelry({ ...jewelry, image: e.target.value })}
+                                        onClick={() => (`${jewelry.image}`)}
+                                        />
+                                        <input className='card-body text-center'
+                                        type="radio"
+                                        name="jewelry"
+                                        checked={jewelry.selected}
+                                        onChange={(e) => {
+                                        setJewelry(oldJewelry => ({
+                                            ...oldJewelry, 
+                                            image: e.target.previousSibling.src,
+                                            itemNumber: e.target.previousSibling.name
+                                        }))}}
+                                        />
+                                        <h3>023a</h3>
+                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
+                                        {jewelry.itemNumber}023a
+                                        </h3> */}
+                                        <hr />
+                                    </div>
+                                </div>
+                                <div key={jewelry._id} className={`card-rounded ${jewelry.selected ? 'selected' : ''}`}>
+                                    <div className='card-image'>
+                                        <img width={"150px"}
+                                        className='img-fluid'
+                                        src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0008.JPG?updatedAt=1698583001642"
+                                        name="034a"
+                                        value="034a"
+                                        {...jewelry.image === "034a"} 
+                                        onChange={(e) => setJewelry({ ...jewelry, image: e.target.value })}
+                                        onClick={() => (`${jewelry.image}`)}
+                                        />
+                                        <input className='card-body text-center'
+                                        type="radio"
+                                        name="jewelry"
+                                        checked={jewelry.selected}
+                                        onChange={(e) => {
+                                        setJewelry(oldJewelry => ({
+                                            ...oldJewelry, 
+                                            image: e.target.previousSibling.src,
+                                            itemNumber: e.target.previousSibling.name
+                                        }))}}
+                                        />
+                                        <h3>034a</h3>
+                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
+                                        {jewelry.itemNumber}034a
+                                        </h3> */}
+                                        <hr />
+                                    </div>
+                                </div>
+                                <div key={jewelry._id} className={`card-rounded ${jewelry.selected ? 'selected' : ''}`}>
+                                    <div className='card-image'>
+                                        <img width={"150px"}
+                                        className='img-fluid'
+                                        src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0016.JPG?updatedAt=1698583026369"
+                                        name="035a"
+                                        value="035a"
+                                        {...jewelry.image === "035a"} 
+                                        onChange={(e) => setJewelry({ ...jewelry, image: e.target.value })}
+                                        onClick={() => (`${jewelry.image}`)}
+                                        />
+                                        <input className='card-body text-center'
+                                        type="radio"
+                                        name="jewelry"
+                                        checked={jewelry.selected}
+                                        onChange={(e) => {
+                                        setJewelry(oldJewelry => ({
+                                            ...oldJewelry, 
+                                            image: e.target.previousSibling.src,
+                                            itemNumber: e.target.previousSibling.name
+                                        }))}}
+                                        />
+                                        <h3>035a</h3>
+                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
+                                        {jewelry.itemNumber}035a
+                                        </h3> */}
+                                        <hr />
+                                    </div>
+                                </div>
+                                <div key={jewelry._id} className={`card-rounded ${jewelry.selected ? 'selected' : ''}`}>
+                                    <div className='card-image'>
+                                        <img width={"150px"}
+                                        className='img-fluid'
+                                        src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0017.JPG?updatedAt=1698583027113"
+                                        name="041a"
+                                        value="041a"
+                                        {...jewelry.image === "041a"} 
+                                        onChange={(e) => setJewelry({ ...jewelry, image: e.target.value })}
+                                        onClick={() => (`${jewelry.image}`)}
+                                        />
+                                        <input className='card-body text-center'
+                                        type="radio"
+                                        name="jewelry"
+                                        checked={jewelry.selected}
+                                        onChange={(e) => {
+                                        setJewelry(oldJewelry => ({
+                                            ...oldJewelry, 
+                                            image: e.target.previousSibling.src,
+                                            itemNumber: e.target.previousSibling.name
+                                        }))}}
+                                        />
+                                        <h3>041a</h3>
+                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
+                                        {jewelry.itemNumber}041a
+                                        </h3> */}
+                                        <hr />
+                                    </div>
+                                </div>
+                                <div key={jewelry._id} className={`card-rounded ${jewelry.selected ? 'selected' : ''}`}>
+                                    <div className='card-image'>
+                                        <img width={"150px"}
+                                        className='img-fluid'
+                                        src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0018.JPG?updatedAt=1698583028480"
+                                        name="049a"
+                                        value="049a"
+                                        {...jewelry.image === "049a"} 
+                                        onChange={(e) => setJewelry({ ...jewelry, image: e.target.value })}
+                                        onClick={() => (`${jewelry.image}`)}
+                                        />
+                                        <input className='card-body text-center'
+                                        type="radio"
+                                        name="jewelry"
+                                        checked={jewelry.selected}
+                                        onChange={(e) => {
+                                        setJewelry(oldJewelry => ({
+                                            ...oldJewelry, 
+                                            image: e.target.previousSibling.src,
+                                            itemNumber: e.target.previousSibling.name
+                                        }))}}
+                                        />
+                                        <h3>049a</h3>
+                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
+                                        {jewelry.itemNumber}049a
+                                        </h3> */}
+                                        <hr />
+                                    </div>
+                                </div>
+                                <div key={jewelry._id} className={`card-rounded ${jewelry.selected ? 'selected' : ''}`}>
+                                    <div className='card-image'>
+                                        <img width={"150px"}
+                                        className='img-fluid'
+                                        src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0013.JPG?updatedAt=1698583000217"
+                                        name="051a"
+                                        value="051a"
+                                        {...jewelry.image === "051a"} 
+                                        onChange={(e) => setJewelry({ ...jewelry, image: e.target.value })}
+                                        onClick={() => (`${jewelry.image}`)}
+                                        />
+                                        <input className='card-body text-center'
+                                        type="radio"
+                                        name="jewelry"
+                                        checked={jewelry.selected}
+                                        onChange={(e) => {
+                                        setJewelry(oldJewelry => ({
+                                            ...oldJewelry, 
+                                            image: e.target.previousSibling.src,
+                                            itemNumber: e.target.previousSibling.name
+                                        }))}}
+                                        />
+                                        <h3>051a</h3>
+                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
+                                        {jewelry.itemNumber}051a
+                                        </h3> */}
+                                        <hr />
+                                    </div>
+                                </div>
+                                <div key={jewelry._id} className={`card-rounded ${jewelry.selected ? 'selected' : ''}`}>
+                                    <div className='card-image'>
+                                        <img width={"150px"}
+                                        className='img-fluid'
+                                        src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0024.JPG?updatedAt=1698583030080"
+                                        name="052a"
+                                        value="052a"
+                                        {...jewelry.image === "052a"} 
+                                        onChange={(e) => setJewelry({ ...jewelry, image: e.target.value })}
+                                        onClick={() => (`${jewelry.image}`)}
+                                        />
+                                        <input className='card-body text-center'
+                                        type="radio"
+                                        name="jewelry"
+                                        checked={jewelry.selected}
+                                        onChange={(e) => {
+                                        setJewelry(oldJewelry => ({
+                                            ...oldJewelry, 
+                                            image: e.target.previousSibling.src,
+                                            itemNumber: e.target.previousSibling.name
+                                        }))}}
+                                        />
+                                        <h3>052a</h3>
+                                        <h3 onClick={() => (`${jewelry.itemNumber}`)}>
+                                        {jewelry.itemNumber}052a
+                                        </h3>
+                                        <hr />
+                                    </div>
+                                </div>
+                                <div key={jewelry._id} className={`card-rounded ${jewelry.selected ? 'selected' : ''}`}>
+                                    <div className='card-image'>
+                                        <img width={"150px"}
+                                        className='img-fluid'
+                                        src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0015.JPG?updatedAt=1698583024867"
+                                        name="053a"
+                                        value="053a"
+                                        {...jewelry.image === "053a"} 
+                                        onChange={(e) => setJewelry({ ...jewelry, image: e.target.value })}
+                                        onClick={() => (`${jewelry.image}`)}
+                                        />
+                                        <input className='card-body text-center'
+                                        type="radio"
+                                        name="jewelry"
+                                        checked={jewelry.selected}
+                                        onChange={(e) => {
+                                        setJewelry(oldJewelry => ({
+                                            ...oldJewelry, 
+                                            image: e.target.previousSibling.src,
+                                            itemNumber: e.target.previousSibling.name
+                                        }))}}
+                                        />
+                                        <h3>053a</h3>
+                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
+                                        {jewelry.itemNumber}053a
+                                        </h3> */}
+                                        <hr />
+                                    </div>
+                                </div>
+                                <div key={jewelry._id} className={`card-rounded ${jewelry.selected ? 'selected' : ''}`}>
+                                    <div className='card-image'>
+                                        <img width={"150px"}
+                                        className='img-fluid'
+                                        src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0006.JPG?updatedAt=1698583000604"
+                                        name="055a"
+                                        value="055a"
+                                        {...jewelry.image === "055a"} 
+                                        onChange={(e) => setJewelry({ ...jewelry, image: e.target.value })}
+                                        onClick={() => (`${jewelry.image}`)}
+                                        />
+                                        <input className='card-body text-center'
+                                        type="radio"
+                                        name="jewelry"
+                                        checked={jewelry.selected}
+                                        onChange={(e) => {
+                                            setJewelry(oldJewelry => ({
+                                                ...oldJewelry, 
+                                                image: e.target.previousSibling.src,
+                                                itemNumber: e.target.previousSibling.name
+                                            }))}}
+                                        />
+                                        <h3>055a</h3>
+                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
+                                        {jewelry.itemNumber}055a
+                                        </h3> */}
+                                        <hr />
+                                    </div>
+                                </div>
+                                <div key={jewelry._id} className={`card-rounded ${jewelry.selected ? 'selected' : ''}`}>
+                                    <div className='card-image'>
+                                        <img width={"150px"}
+                                        className='img-fluid'
+                                        src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0025.JPG?updatedAt=1698583032842"
+                                        name="061a"
+                                        value="061a"
+                                        {...jewelry.image === "061a"} 
+                                        onChange={(e) => setJewelry({ ...jewelry, image: e.target.value })}
+                                        onClick={() => (`${jewelry.image}`)}
+                                        />
+                                        <input className='card-body text-center'
+                                        type="radio"
+                                        name="jewelry"
+                                        checked={jewelry.selected}
+                                        onChange={(e) => {
+                                            setJewelry(oldJewelry => ({
+                                                ...oldJewelry, 
+                                                image: e.target.previousSibling.src,
+                                                itemNumber: e.target.previousSibling.name
+                                            }))}}
+                                        />
+                                        <h3>061a</h3>
+                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
+                                        {jewelry.itemNumber}061a
+                                        </h3> */}
+                                        <hr />
+                                    </div>
+                                </div>
+                                <div key={jewelry._id} className={`card-rounded ${jewelry.selected ? 'selected' : ''}`}>
+                                    <div className='card-image'>
+                                        <img width={"150px"}
+                                        className='img-fluid'
+                                        src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0005.JPG?updatedAt=1698583002224"
+                                        name="062a"
+                                        value="062a"
+                                        {...jewelry.image === "062a"} 
+                                        onChange={(e) => setJewelry({ ...jewelry, image: e.target.value })}
+                                        onClick={() => (`${jewelry.image}`)}
+                                        />
+                                        <input className='card-body text-center'
+                                        type="radio"
+                                        name="jewelry"
+                                        checked={jewelry.selected}
+                                        onChange={(e) => {
+                                            setJewelry(oldJewelry => ({
+                                                ...oldJewelry, 
+                                                image: e.target.previousSibling.src,
+                                                itemNumber: e.target.previousSibling.name
+                                            }))}}
+                                        />
+                                        <h3>062a</h3>
+                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
+                                        {jewelry.itemNumber}062a
+                                        </h3> */}
+                                        <hr />
+                                    </div>
+                                </div>
+                                <div key={jewelry._id} className={`card-rounded ${jewelry.selected ? 'selected' : ''}`}>
+                                    <div className='card-image'>
+                                        <img width={"150px"}
+                                        className='img-fluid'
+                                        src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0027.JPG?updatedAt=1698583055738"
+                                        name="066a"
+                                        value="066a"
+                                        {...jewelry.image === "066a"} 
+                                        onChange={(e) => setJewelry({ ...jewelry, image: e.target.value })}
+                                        onClick={() => (`${jewelry.image}`)}
+                                        />
+                                        <input className='card-body text-center'
+                                        type="radio"
+                                        name="jewelry"
+                                        checked={jewelry.selected}
+                                        onChange={(e) => {
+                                            setJewelry(oldJewelry => ({
+                                                ...oldJewelry, 
+                                                image: e.target.previousSibling.src,
+                                                itemNumber: e.target.previousSibling.name
+                                            }))}}
+                                        />
+                                        <h3>066a</h3>
+                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
+                                        {jewelry.itemNumber}066a
+                                        </h3> */}
+                                        <hr />
+                                    </div>
+                                </div>
+                                <div key={jewelry._id} className={`card-rounded ${jewelry.selected ? 'selected' : ''}`}>
+                                    <div className='card-image'>
+                                        <img width={"150px"}
+                                        className='img-fluid'
+                                        src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0026.JPG?updatedAt=1698583056018"
+                                        name="075a"
+                                        value="075a"
+                                        {...jewelry.image === "075a"} 
+                                        onChange={(e) => setJewelry({ ...jewelry, image: e.target.value })}
+                                        onClick={() => (`${jewelry.image}`)}
+                                        />
+                                        <input className='card-body text-center'
+                                        type="radio"
+                                        name="jewelry"
+                                        checked={jewelry.selected}
+                                        onChange={(e) => {
+                                            setJewelry(oldJewelry => ({
+                                                ...oldJewelry, 
+                                                image: e.target.previousSibling.src,
+                                                itemNumber: e.target.previousSibling.name
+                                            }))}}
+                                        />
+                                        <h3>075a</h3>
+                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
+                                        {jewelry.itemNumber}075a
+                                        </h3> */}
+                                        <hr />
+                                    </div>
+                                </div>
+                                <div key={jewelry._id} className={`card-rounded ${jewelry.selected ? 'selected' : ''}`}>
+                                    <div className='card-image'>
+                                        <img width={"150px"}
+                                        className='img-fluid'
+                                        src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0002.JPG?updatedAt=1698583001186"
+                                        name="078a"
+                                        value="078a"
+                                        {...jewelry.image === "078a"} 
+                                        onChange={(e) => setJewelry({ ...jewelry, image: e.target.value })}
+                                        onClick={() => (`${jewelry.image}`)}
+                                        />
+                                        <input className='card-body text-center'
+                                        type="radio"
+                                        name="jewelry"
+                                        checked={jewelry.selected}
+                                        onChange={(e) => {
+                                            setJewelry(oldJewelry => ({
+                                                ...oldJewelry, 
+                                                image: e.target.previousSibling.src,
+                                                itemNumber: e.target.previousSibling.name
+                                            }))}}
 
-                            </div> */}
+                                            />
+                                        <h3>078a</h3>
+                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
+                                        {jewelry.itemNumber}078a
+                                        </h3> */}
+                                        <hr />
+                                    </div>
+                                </div>
+                                <div key={jewelry._id} className={`card-rounded ${jewelry.selected ? 'selected' : ''}`}>
+                                    <div className='card-image'>
+                                        <img width={"150px"}
+                                        className='img-fluid'
+                                        src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0010.JPG?updatedAt=1698583002354"
+                                        name="079a"
+                                        value="079a"
+                                        {...jewelry.image === "079a"} 
+                                        onChange={(e) => setJewelry({ ...jewelry, image: e.target.value })}
+                                        onClick={() => (`${jewelry.image}`)}
+                                        />
+                                        <input className='card-body text-center'
+                                        type="radio"
+                                        name="jewelry"
+                                        checked={jewelry.selected}
+                                        onChange={(e) => {
+                                            setJewelry(oldJewelry => ({
+                                                ...oldJewelry, 
+                                                image: e.target.previousSibling.src,
+                                                itemNumber: e.target.previousSibling.name
+                                            }))}}
+                                        />
+                                        <h3>079a</h3>
+                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
+                                        {jewelry.itemNumber}079a
+                                        </h3> */}
+                                        <hr />
+                                    </div>
+                                </div>
+                                {errors.hardware ? <p>{errors.hardware.message}</p> : null}
+                            </div>
+
+                            <br/>
 
                             <button className="btn btn-secondary btn-sm" type="submit">Submit</button>  <Link to={"/shopInventory"}><button className='btn btn-secondary btn-sm'>Cancel</button></Link>
                         </form>
@@ -295,6 +887,12 @@ const Create = () => {
                             <img className="card-img-top" src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0030.JPG?updatedAt=1698583055849" alt="Card image cap"/>
                             <img className="card-img-top" src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0029.JPG?updatedAt=1698583055815" alt="Card image cap"/>
                             <img className="card-img-top" src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0028.JPG?updatedAt=1698583055463" alt="Card image cap"/>
+                            <img className="card-img-top" src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0021.JPG?updatedAt=1698583028484" alt="Card image cap"/>
+                            <img className="card-img-top" src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0022.JPG?updatedAt=1698583028643" alt="Card image cap"/>
+                            <img className="card-img-top" src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0024.JPG?updatedAt=1698583030080" alt="Card image cap"/>
+                            <img className="card-img-top" src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0027.JPG?updatedAt=1698583055738" alt="Card image cap"/>
+                            <img className="card-img-top" src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0014.JPG?updatedAt=1698583000911" alt="Card image cap"/>
+                            {/* <img className="card-img-top" src="..." alt="Card image cap"/> */}
                             </div>
                             <div className="col-sm">
                             <img className="card-img-top" src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0009.JPG?updatedAt=1698582998763" alt="Card image cap"/>
@@ -308,19 +906,12 @@ const Create = () => {
                             <img className="card-img-top" src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0018.JPG?updatedAt=1698583028480" alt="Card image cap"/>
                             <img className="card-img-top" src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0025.JPG?updatedAt=1698583032842" alt="Card image cap"/>
                             <img className="card-img-top" src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0026.JPG?updatedAt=1698583056018" alt="Card image cap"/>
-                            </div>
-                            <div className="col-sm">
                             <img className="card-img-top" src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0013.JPG?updatedAt=1698583000217" alt="Card image cap"/>
                             <img className="card-img-top" src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0016.JPG?updatedAt=1698583026369" alt="Card image cap"/>
                             <img className="card-img-top" src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0011.JPG?updatedAt=1698583003687" alt="Card image cap"/>
                             <img className="card-img-top" src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0017.JPG?updatedAt=1698583027113" alt="Card image cap"/>
-                            <img className="card-img-top" src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0023.JPG?updatedAt=1698583028096" alt="Card image cap"/>
-                            <img className="card-img-top" src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0021.JPG?updatedAt=1698583028484" alt="Card image cap"/>
-                            <img className="card-img-top" src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0022.JPG?updatedAt=1698583028643" alt="Card image cap"/>
-                            <img className="card-img-top" src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0024.JPG?updatedAt=1698583030080" alt="Card image cap"/>
-                            <img className="card-img-top" src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0027.JPG?updatedAt=1698583055738" alt="Card image cap"/>
-                            <img className="card-img-top" src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0014.JPG?updatedAt=1698583000911" alt="Card image cap"/>
-                            {/* <img className="card-img-top" src="..." alt="Card image cap"/> */}
+                            <img className="card-img-top" src="https://ik.imagekit.io/photocabana7/RHFDesignsOnline/IMG_0023.JPG?
+                            updatedAt=1698583028096" alt="Card image cap"/>
                             </div>
                         </div>
                         </div>

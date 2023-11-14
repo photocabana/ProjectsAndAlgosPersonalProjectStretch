@@ -46,5 +46,3 @@ const JewelrySchema = new mongoose.Schema(
 
 const Jewelry = mongoose.model('Jewelry', JewelrySchema)
 module.exports = Jewelry
-
-

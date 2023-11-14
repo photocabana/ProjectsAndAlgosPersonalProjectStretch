@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 
 const View = (props) => {
-    const { getAllJewelry } = props
+    const { getAllJewelry, loggedUser, setLoggedUser } = props
     const [jewelry, setJewelry] = useState({
         itemNumber: "",
         image: "",
@@ -42,21 +42,9 @@ const View = (props) => {
         })
     }
 
-    const logoutUser = () => {
-        axios.post('http://localhost:8000/api/logoutUser', {}, {withCredentials:true})
-            .then((res) => {
-                console.log(res)
-                navigate('/')
-            })
-            .catch((err) => {
-                console.log(err);
-            })
-    }
-
 
     return (
         <div className="container">
-            <Link to={'/register'}><button className="btn btn-secondary btn-sm">Register</button></Link>  <Link to={'/login'}><button className="btn btn-secondary btn-sm">Sign In</button></Link>  <button onClick={logoutUser} className="btn btn-secondary btn-sm">Logout</button>
             <div className="jewelryName">
                 <div className="card-deck">
                     <div className="card @media">
@@ -70,13 +58,21 @@ const View = (props) => {
                                 <p className="card-text"><small className="text-muted">Cost:  ${jewelry.cost}</small></p>
                                 <p className="card-text"><small className="text-muted">Qty:  {jewelry.quantity}</small></p>
                             </div>
-                            <Link to={`/edit/${jewelry._id}`}>
+                            {loggedUser?._id && loggedUser._id === jewelry.creatorId ?
+                                <>
+                                <Link to={`/edit/${jewelry._id}`}><button className="btn btn-secondary btn-sm">Edit</button></Link>  
+                                <button onClick={() => handleDeleteJewelry(jewelry._id)} className="btn btn-secondary btn-sm">Delete</button>
+                                </>
+                            : null
+                            }
+                            <Link to={`/view/${jewelry._id}`}><button className="btn btn-secondary btn-sm">View</button></Link>  
+                            {/* <Link to={`/edit/${jewelry._id}`}>
                                 <button className="btn btn-secondary btn-sm">Edit</button>
                             </Link>
                             <Link to={`/view/${jewelry._id}`}>
                                 <button className="btn btn-secondary btn-sm">View</button>
                             </Link>
-                            <button onClick={() => handleDeleteJewelry(jewelry._id)} className="btn btn-secondary btn-sm">Delete</button>
+                            <button onClick={() => handleDeleteJewelry(jewelry._id)} className="btn btn-secondary btn-sm">Delete</button> */}
                             <hr/>
                         </div>
                     </div>

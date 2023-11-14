@@ -12,7 +12,7 @@ const Create = (props) => {
         cost: "",
         quantity: "",
         image: "",
-        creatorId: loggedUser._id
+        creatorId: loggedUser?._id
     })
 
     const [errors, setErrors] = useState({})
@@ -20,33 +20,26 @@ const Create = (props) => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
+        if (!loggedUser) {
+            navigate("/login")
+            return
+        }
         axios.post(`http://localhost:8000/api/new`, jewelry)
         .then(response => {
             // allDesigns is the better getter - after the arrow is implied
             setAllJewelry(allDesigns => [...allDesigns, response.data.newlyCreatedJewelry])
-            console.log(response)
+            console.log(response.data)
             navigate("/ShopInventory")
         })
         .catch(err => {
-            console.log(err.response)
+            console.log(err.response.data.error.errors)
             setErrors(err.response.data.error.errors)
         })
     }
 
-    const logoutUser = () => {
-        axios.post('http://localhost:8000/api/logoutUser', {}, {withCredentials:true})
-            .then((res) => {
-                console.log(res)
-                navigate('/')
-            })
-            .catch((err) => {
-                console.log(err);
-            })
-    }
 
     return (
         <div>
-            <Link to={'/register'}><button className="btn btn-secondary btn-sm">Register</button></Link>  <Link to={'/login'}><button className="btn btn-secondary btn-sm">Sign In</button></Link>  <button onClick={logoutUser} className="btn btn-secondary btn-sm">Logout</button>
             <div className='card @media'>
                 <h2 className="creativity">Feeling Creative?</h2>
                 <br/>
@@ -273,9 +266,6 @@ const Create = (props) => {
                                         }))}}
                                         />
                                         <h3>004a</h3>
-                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
-                                        {jewelry.itemNumber}004a
-                                        </h3> */}
                                         <hr />
                                     </div>
                                 </div>
@@ -302,9 +292,6 @@ const Create = (props) => {
                                         }))}}
                                         />
                                         <h3>006a</h3>
-                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
-                                        {jewelry.itemNumber}006a
-                                        </h3> */}
                                         <hr />
                                     </div>
                                 </div>
@@ -331,9 +318,6 @@ const Create = (props) => {
                                         }))}}
                                         />
                                         <h3>007a</h3>
-                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
-                                        {jewelry.itemNumber}007a
-                                        </h3> */}
                                         <hr />
                                     </div>
                                 </div>
@@ -360,9 +344,6 @@ const Create = (props) => {
                                         }))}}
                                         />
                                         <h3>011a</h3>
-                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
-                                        {jewelry.itemNumber}011a
-                                        </h3> */}
                                         <hr />
                                     </div>
                                 </div>
@@ -389,9 +370,6 @@ const Create = (props) => {
                                         }))}}
                                         />
                                         <h3>015a</h3>
-                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
-                                        {jewelry.itemNumber}015a
-                                        </h3> */}
                                         <hr />
                                     </div>
                                 </div>
@@ -418,9 +396,6 @@ const Create = (props) => {
                                         }))}}
                                         />
                                         <h3>017a</h3>
-                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
-                                        {jewelry.itemNumber}017a
-                                        </h3> */}
                                         <hr />
                                     </div>
                                 </div>
@@ -447,9 +422,6 @@ const Create = (props) => {
                                         }))}}
                                         />
                                         <h3>023a</h3>
-                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
-                                        {jewelry.itemNumber}023a
-                                        </h3> */}
                                         <hr />
                                     </div>
                                 </div>
@@ -476,9 +448,6 @@ const Create = (props) => {
                                         }))}}
                                         />
                                         <h3>034a</h3>
-                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
-                                        {jewelry.itemNumber}034a
-                                        </h3> */}
                                         <hr />
                                     </div>
                                 </div>
@@ -505,9 +474,6 @@ const Create = (props) => {
                                         }))}}
                                         />
                                         <h3>035a</h3>
-                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
-                                        {jewelry.itemNumber}035a
-                                        </h3> */}
                                         <hr />
                                     </div>
                                 </div>
@@ -534,9 +500,6 @@ const Create = (props) => {
                                         }))}}
                                         />
                                         <h3>041a</h3>
-                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
-                                        {jewelry.itemNumber}041a
-                                        </h3> */}
                                         <hr />
                                     </div>
                                 </div>
@@ -563,9 +526,6 @@ const Create = (props) => {
                                         }))}}
                                         />
                                         <h3>049a</h3>
-                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
-                                        {jewelry.itemNumber}049a
-                                        </h3> */}
                                         <hr />
                                     </div>
                                 </div>
@@ -592,9 +552,6 @@ const Create = (props) => {
                                         }))}}
                                         />
                                         <h3>051a</h3>
-                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
-                                        {jewelry.itemNumber}051a
-                                        </h3> */}
                                         <hr />
                                     </div>
                                 </div>
@@ -621,9 +578,6 @@ const Create = (props) => {
                                         }))}}
                                         />
                                         <h3>052a</h3>
-                                        <h3 onClick={() => (`${jewelry.itemNumber}`)}>
-                                        {jewelry.itemNumber}052a
-                                        </h3>
                                         <hr />
                                     </div>
                                 </div>
@@ -650,9 +604,6 @@ const Create = (props) => {
                                         }))}}
                                         />
                                         <h3>053a</h3>
-                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
-                                        {jewelry.itemNumber}053a
-                                        </h3> */}
                                         <hr />
                                     </div>
                                 </div>
@@ -679,9 +630,6 @@ const Create = (props) => {
                                             }))}}
                                         />
                                         <h3>055a</h3>
-                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
-                                        {jewelry.itemNumber}055a
-                                        </h3> */}
                                         <hr />
                                     </div>
                                 </div>
@@ -708,9 +656,6 @@ const Create = (props) => {
                                             }))}}
                                         />
                                         <h3>061a</h3>
-                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
-                                        {jewelry.itemNumber}061a
-                                        </h3> */}
                                         <hr />
                                     </div>
                                 </div>
@@ -737,9 +682,6 @@ const Create = (props) => {
                                             }))}}
                                         />
                                         <h3>062a</h3>
-                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
-                                        {jewelry.itemNumber}062a
-                                        </h3> */}
                                         <hr />
                                     </div>
                                 </div>
@@ -766,9 +708,6 @@ const Create = (props) => {
                                             }))}}
                                         />
                                         <h3>066a</h3>
-                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
-                                        {jewelry.itemNumber}066a
-                                        </h3> */}
                                         <hr />
                                     </div>
                                 </div>
@@ -795,9 +734,6 @@ const Create = (props) => {
                                             }))}}
                                         />
                                         <h3>075a</h3>
-                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
-                                        {jewelry.itemNumber}075a
-                                        </h3> */}
                                         <hr />
                                     </div>
                                 </div>
@@ -825,9 +761,6 @@ const Create = (props) => {
 
                                             />
                                         <h3>078a</h3>
-                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
-                                        {jewelry.itemNumber}078a
-                                        </h3> */}
                                         <hr />
                                     </div>
                                 </div>
@@ -854,9 +787,6 @@ const Create = (props) => {
                                             }))}}
                                         />
                                         <h3>079a</h3>
-                                        {/* <h3 onClick={() => (`${jewelry.itemNumber}`)}>
-                                        {jewelry.itemNumber}079a
-                                        </h3> */}
                                         <hr />
                                     </div>
                                 </div>

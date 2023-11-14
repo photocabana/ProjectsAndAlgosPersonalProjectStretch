@@ -4,9 +4,10 @@ import { Link, useNavigate } from 'react-router-dom'
 import "../App.css"
 
 const ShopInventory = (props) => {
-    const {loggedUser, setLoggedUser, allJewelry, setAllJewelry} = props
+    const {loggedUser, allJewelry, setAllJewelry} = props
+    const {setLoggedUser} = useState(loggedUser)
     const navigate = useNavigate()
-    console.log(loggedUser._id)
+    // console.log(loggedUser._id)
 
     const handleDeleteJewelry = (idFromBelow) => {
     axios.delete(`http://localhost:8000/api/delete/${idFromBelow}`)
@@ -21,22 +22,9 @@ const ShopInventory = (props) => {
         })
     }
 
-    const logoutUser = () => {
-        axios.post('http://localhost:8000/api/logoutUser', {}, {withCredentials:true})
-            .then((res) => {
-                console.log(res)
-                setLoggedUser({})
-                navigate('/')
-            })
-            .catch((err) => {
-                console.log(err);
-            })
-    }
-
 
     return (
         <div className="container">
-            <Link to={'/register'}><button className="btn btn-secondary btn-sm">Register</button></Link>  <Link to={'/login'}><button className="btn btn-secondary btn-sm">Sign In</button></Link>  <button onClick={logoutUser} className="btn btn-secondary btn-sm">Logout</button>
             <div className="jewelryName">
                 <div className="card-deck">
                     <div className="card @media">
@@ -51,7 +39,7 @@ const ShopInventory = (props) => {
                                 <p className="card-text"><b>Cost:  ${jewelry.cost}</b></p>
                                 <p className="card-text"><b>Qty:  {jewelry.quantity}</b></p>
                             </div>
-                            {loggedUser._id && loggedUser._id === jewelry.creatorId ?
+                            {loggedUser?._id && loggedUser._id === jewelry.creatorId ?
                             <>
                             <Link to={`/edit/${jewelry._id}`}><button className="btn btn-secondary btn-sm">Edit</button></Link>  
                             <button onClick={() => handleDeleteJewelry(jewelry._id)} className="btn btn-secondary btn-sm">Delete</button>

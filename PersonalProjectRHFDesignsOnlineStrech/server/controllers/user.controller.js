@@ -10,20 +10,20 @@ module.exports = {
 //Where User Registers
     registerUser: async (req, res) => {
         try{
-            // ! Check if the user already exists - prevents duplicate entries 
+// ! Check if the user already exists - prevents duplicate entries 
             const potentialUser = await User.findOne({email:req.body.email})
             if (potentialUser){
                 res.status(400).json({message:'This email already exists please log in'})
             }
             else{
-                // create new user
+// create new user
                 const newUser = await User.create(req.body)
 
-                // generating a usertoken and storing the id and email of the newly created user
+// generating a usertoken and storing the id and email of the newly created user
                 const userToken = jwt.sign({_id: newUser._id, email:newUser.email, isAdmin: newUser.isAdmin}, secret, {expiresIn: '2h'})
                 console.log(userToken)
 
-                // Sending user data back to the client
+// Sending user data back to the client
                 res.status(201).cookie('userToken', userToken, {httpOnly:true, maxAge: 2 * 60 * 60 * 1000}).json(newUser)
             }
         }
@@ -84,7 +84,7 @@ module.exports = {
         }
     },
 
-    getLoggedInUser: async (req, res) => {
+    getUserById: async (req, res) => {
         const id = req.params.id
         try{
             const user = await User.findById(id)

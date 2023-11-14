@@ -1,11 +1,9 @@
 import axios from 'axios'
 import { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
-// import logoutUser from '../hooks/logout'
-
 
 const Edit = (props) => {
-    const { getAllJewelry } = props
+    const { loggedUser, getAllJewelry } = props
     console.log('props', props)
     const [jewelry, setJewelry] = useState({
         itemNumber: "",
@@ -14,7 +12,8 @@ const Edit = (props) => {
         medium: "",
         hardware: "",
         cost: "",
-        quantity: ""
+        quantity: "",
+        creatorId: loggedUser._id
     })
 
     const {id} = useParams()
@@ -62,21 +61,9 @@ const Edit = (props) => {
         })
     }
 
-    const logoutUser = () => {
-        axios.post('http://localhost:8000/api/logoutUser', {}, {withCredentials:true})
-            .then((res) => {
-                console.log(res)
-                navigate('/')
-            })
-            .catch((err) => {
-                console.log(err);
-            })
-    }
-
 
     return (
         <div>
-            <Link to={'/register'}><button className="btn btn-secondary btn-sm">Register</button></Link>  <Link to={'/login'}><button className="btn btn-secondary btn-sm">Sign In</button></Link>  <button onClick={logoutUser} className="btn btn-secondary btn-sm">Logout</button>
             <div className='card @media'>
                 <form onSubmit={submitHandler}>
                     <h2>Edit {jewelry.itemNumber}:</h2>

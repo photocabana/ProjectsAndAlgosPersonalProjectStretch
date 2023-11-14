@@ -3,24 +3,12 @@ import axios from 'axios'
 import { Link, useNavigate } from 'react-router-dom'
 import "../App.css"
 
-
 const Company = () => {
     const navigate = useNavigate()
-    
-    const logoutUser = () => {
-        axios.post('http://localhost:8000/api/logoutUser', {}, {withCredentials:true})
-            .then((res) => {
-                console.log(res)
-                navigate('/')
-            })
-            .catch((err) => {
-                console.log(err);
-            })
-    }
+
 
     return (
         <div>
-            <Link to={'/register'}><button className="btn btn-secondary btn-sm">Register</button></Link>  <Link to={'/login'}><button className="btn btn-secondary btn-sm">Sign In</button></Link>  <button onClick={logoutUser} className="btn btn-secondary btn-sm">Logout</button>
             <div className='card @media'>
                 <p>
                 🌟 Welcome to the vibrant world of RHFDesignsOnline, where creativity knows no bounds! 🌟

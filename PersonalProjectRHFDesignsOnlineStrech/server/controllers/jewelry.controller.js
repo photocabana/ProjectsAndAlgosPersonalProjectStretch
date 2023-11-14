@@ -18,8 +18,7 @@ module.exports = {
             res.status(200).json({ newlyCreatedJewelry })
         })
         .catch((err) => {
-            // res.status(400).json({ message: 'Something went wrong in create controllers', error: err })
-            res.status(400).json(err)
+            res.status(400).json({ message: 'Something went wrong in create controllers', error: err })
         })
     },
 
